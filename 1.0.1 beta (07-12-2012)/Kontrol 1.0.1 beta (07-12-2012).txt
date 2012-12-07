@@ -1,0 +1,494 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Runtime.InteropServices;
+using System.Diagnostics;
+using System.Reflection;
+using System.CodeDom.Compiler;
+
+
+namespace Kontrol
+{
+    class Program
+    {
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern int SetConsoleFont( 
+            IntPtr hOut,    
+            uint dwFontNum  
+            );
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern IntPtr GetStdHandle(int dwType);
+
+        static int fontsiz = 6;
+
+        static void writetext(string text, int time) 
+        {
+            char[] b = new char[text.Length];
+            for (int i = 0; i < text.Length; i++)
+                b[i] = text[i];
+            for (int i = 0; i < b.Length; i++)
+            {
+                Console.Write(b[i]);
+                Thread.Sleep(time);
+            }
+        }
+        private static void help()
+        {
+            string[][] command = new string[2][];
+            command[0] = new string[] { 
+                "help", "info", "zadachi", "summkub", "sinfunc", "nkuy", "nkstar", "fibbo", "krat", "nopow", 
+                "summm", "naturn", "zfunc", "logfunc", "sovern", "dvuzif", "sple", "summnat", "nod", "posled", 
+                "podstav","sizeup", "sizedown", "sizereset", "clear", "exit" 
+            };
+            command[1] = new string[] { 
+                "Помощь", "Информация о системе и программе", "Список задач", "Задача 1", "Задача 2", 
+                "Задача 3", "Задача 5", "Задача 6", "Задача 7", "Задача 8", "Задача 9", "Задача 10", 
+                "Задача 11", "Задача 12", "Задача 13", "Задача 15", "Задача 17", "Задача 19", "Задача 20", 
+                "Задача 21", "Задача 24","Увеличить шрифт", "Уменьшить шрифт", "Сбросить шрифт", 
+                "Очистить консоль", "Выход" 
+            };
+            for (int i = 0; i < command[0].Length; i++)
+                Console.WriteLine(string.Format("{0,-3}{1} - {2}", "", command[0][i], command[1][i]));
+            next();
+        }
+        private static void info()
+        {
+            string[][] info = new string[2][];
+            info[0] = new string[] { "Имя пользователя", "Версия ОС", "Имя компьютера", "Текущая версия .NET", "Версия программы", "Автор программы", "E-mail автора" };
+            info[1] = new string[] { Environment.UserName, Environment.OSVersion.ToString(), Environment.MachineName, Environment.Version.ToString(), "1.0.1 beta", "Коровин Александр Сергеевич", "sas-korov@yandex.ru" };
+            for (int i = 0; i < info[0].Length; i++) Console.WriteLine(string.Format("{0,-3}{1,-20}:{2}", "", info[0][i], info[1][i]));
+            next();
+        }
+        private static void zadachi()
+        {
+            string[][] z = new string[3][];
+            z[0] = new string[] { 
+                "summkub", "sinfunc", "nkuy", "nkstar", "fibbo", "krat", "nopow", "summm", "naturn", "zfunc", 
+                "logfunc", "sovern", "dvuzif", "sple", "summnat", "nod", "posled", "podstav" 
+            };
+            z[1] = new string[] { 
+                "Задача 1", "Задача 2", "Задача 3", "Задача 5", "Задача 6", "Задача 7", "Задача 8", "Задача 9", 
+                "Задача 10", "Задача 11", "Задача 12", "Задача 13", "Задача 15", "Задача 17", "Задача 19", 
+                "Задача 20", "Задача 21", "Задача 24" 
+            };
+            z[2] = new string[] { 
+                "Трехзначные числа, равные сумме кубов своих цифр", 
+                "Вычислить значения функции f(x) для значений аргумента x от -0.4 до 1.3 с шагом 0.1.", 
+                "Даны натуральные числа n и k. Определить k-ю справа цифру числа n", 
+                "Дано натуральное число n. Вычислить сумму k старших (находящихся слева) цифр числа.", 
+                "Дано положительное число a. Найти k-ое число Фибоначчи", 
+                "Найти количество трехзначных чисел, кратных 15, но не кратных 30. Распечатать эти числа.", 
+                "Вычислить, не используя функцию pow(), значения функции z(x,m) = x^m * sin^m (xm), для значений аргументов: x от -1.1 до 0.3 с шагом 0.2; m от 1 до 5 с шагом 1", 
+                "По введенному целому числу M распечатать все трехзначные десятичные числа, сумма цифр которых равна M. Подсчитать также количество таких чисел или сообщить о том, что их нет.", 
+                "Дано натуральное число N. Определить третью справа его цифру.", 
+                "Вычислить значения функции, для значений аргумента x от -0.5 до 1.2 с шагом 0.1.", 
+                "Напечатать таблицу истинности логической функции !(a || b & c) || a", 
+                "По введенному натуральному числу N определить, является ли оно совершенным. Совершенное число равно сумме всех своих делителей, включая единицу и не включая себя.", 
+                "Распечатать все четырехзначные натуральные десятичные числа из диапазона [2000..3000], в записи которых нет двух одинаковых цифр. Подсчитать количество таких чисел.", 
+                "Выяснить, какие цифры (по одной справа и слева) надо приписать к числу 1022, чтобы полученное число делилось на 7, 8, 9.", 
+                "Натуральное число m представить в виде суммы квадратов двух натуральных чисел. Выдать сообщение, если такое представление невозможно.", 
+                "Найти наибольший общий делитель (НОД) двух введенных натуральных чисел, используя алгоритм Евклида.", 
+                "Даны вещественные числа А и В (A<B). Найти первый член последовательности, который не принадлежит [A,B].", 
+                "В выражении (((( 1 ? 2) ? 3) ? 4) ? 5) ? 6  вместо каждого знака ? поставить знак одной из операций +, -, *, / так, чтобы результат вычислений был равен 35." 
+            };
+            for (int i = 0; i < z[0].Length; i++)
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write(z[0][i]);
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.Write(" - ");
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                Console.Write(z[1][i]+": ");
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.Write(z[2][i]+"\n");
+            }
+            next();
+        }
+        private static void summkub()
+        {
+            writetext("Трехзначные числа, равные сумме кубов своих цифр:", 50);
+            Console.WriteLine();
+            for (int i = 100; i < 1000; i++)
+            {
+                string s = i.ToString();
+                double str = Math.Pow(s[0] - 48, 3) + Math.Pow(s[1] - 48, 3) + Math.Pow(s[2] - 48, 3);
+                if (str == i) Console.WriteLine(str);
+            }
+            next();
+        }
+        private static void sinfunc()
+        {
+            writetext("Вычислить значения функции f(x) для значений аргумента x от -0.4 до 1.3 с шагом 0.1.", 50);
+            Console.WriteLine();
+            double x = -0.4;
+            while (x <= 1.3)
+            {
+                double rx;
+                if (x <= 0.5) rx = Math.Sin(Math.PI / 2);
+                else rx = Math.Sin((x - 1) * Math.PI / 2);
+                Console.WriteLine("f(" + x + ") = " + rx);
+                x = x + 0.1;
+                x = Math.Round(x, 1);
+            }
+            next();
+        }
+        private static void nkuy()
+        {
+            writetext("Даны натуральные числа n и k. Определить k-ю справа цифру числа n:", 50);
+            Console.WriteLine();
+            writetext("Введите число n: ", 50);
+            string n = Console.ReadLine();
+            writetext("Введите число k: ", 50);
+            int ki = Convert.ToInt32(Console.ReadLine());
+            if (ki > n.Length) writetext("Такой цифры в числе нету.", 50);
+            else writetext("Эта цифра: "+n[n.Length - ki], 50);
+            next();
+        }
+        private static void nkstar()
+        {
+            writetext("Дано натуральное число n. Вычислить сумму k старших (находящихся слева) цифр числа.",50);
+            Console.WriteLine();
+            writetext("Введите число n: ", 50);
+            string n = Console.ReadLine();
+            writetext("Введите число k: ", 50);
+            int k = Convert.ToInt32(Console.ReadLine());
+            if (k > n.Length) writetext("Число k слишком большое.", 50);
+            else
+            {
+                int summ = 0;
+                for (int i = 0; i < k; i++) summ = summ + Convert.ToInt32(n[i])-48;
+                writetext("Сумма: " + summ, 50);
+            }
+            next();
+        }
+        private static void fibbo()
+        {
+            writetext("Дано положительное число a. Найти k-ое число Фибоначчи", 50);
+            Console.WriteLine();
+            writetext("Введите число a: ", 50);
+            int a = Convert.ToInt32(Console.ReadLine());
+            int p = 1;
+            int s = 1;
+            int n = 0;
+            for (int i = 3; i < 100; i++)
+            {
+                n = p + s;
+                if (a < n && a >= s)
+                {
+                    writetext("Число Фибоначчи: " + i, 50);
+                    i = 100;
+                }
+                else
+                {
+                    p = s;
+                    s = n;
+                }
+            }
+            next();
+        }
+        private static void krat()
+        {
+            writetext("Найти количество трехзначных чисел, кратных 15, но не кратных 30:", 50);
+            Console.WriteLine();
+            for (int i = 100; i < 1000; i++)
+                if (Math.IEEERemainder(i, 15) == 0 && Math.IEEERemainder(i, 30) != 0) Console.WriteLine(i);
+            next();
+        }
+        private static void nopow()
+        {
+            writetext("Вычислить, не используя функцию pow(), значения функции z(x,m) = x^m * sin^m (xm), для значений аргументов: x от -1.1 до 0.3 с шагом 0.2; m от 1 до 5 с шагом 1", 50);
+            Console.WriteLine();
+            double x = -1.1;
+            while (x <= 0.3)
+            {
+                for (int m = 1; m <= 5; m++)
+                {
+                    double rx = 1;
+                    double rs = 1;
+                    int n;
+                    for (n = 0; n < m; n++)
+                    {
+                        rx = rx * x;
+                        rs = rs * Math.Sin(x * m);
+                    }
+                    rs = rs * rx;
+                    Console.WriteLine("z(" + x + ", " + m + ") = " + rx);
+                }
+                x = x + 0.2;
+                x = Math.Round(x,1);
+            }
+            next();
+        }
+        private static void summm()
+        {
+            writetext("По введенному целому числу M распечатать все трехзначные десятичные числа, сумма цифр которых равна M. Подсчитать также количество таких чисел или сообщить о том, что их нет.", 50);
+            Console.WriteLine();
+            writetext("Введите число M: ", 50);
+            int m = Convert.ToInt32(Console.ReadLine());
+            int num = 0;
+            for (int i = 100; i < 1000; i++)
+            {
+                string s = i.ToString();
+                int str = s[0] + s[1] + s[2] - 48*3;
+                if (str == m)
+                {
+                    Console.WriteLine(i);
+                    num++;
+                }
+            }
+            if (num == 0) writetext("Таких трехзначных чисел не существует",50);
+            else writetext("Таких трехзначных чисел "+num, 50);
+            next();
+        }
+        private static void naturn()
+        {
+            writetext("Дано натуральное число N. Определить третью справа его цифру.", 50);
+            Console.WriteLine();
+            writetext("Введите число N: ", 50);
+            string n = Console.ReadLine();
+            writetext("Эта цифра: "+n[n.Length-3], 50);
+            next();
+        }
+        private static void zfunc()
+        {
+            writetext("Вычислить значения функции, для значений аргумента x от -0.5 до 1.2 с шагом 0.1.", 50);
+            Console.WriteLine();
+            double x = -0.5;
+            while (x <= 1.2)
+            {
+                double rx;
+                if (x < 0.3) rx = Math.Sin(Math.PI / 8 + Math.Abs(x));
+                else rx = Math.Sin(Math.Pow(x,2) * Math.PI / 2);
+                Console.WriteLine("f(" + x + ") = " + rx);
+                x = x + 0.1;
+                x = Math.Round(x, 1);
+            }
+            next();
+        }
+        private static void logfunc()
+        {
+            writetext("Напечатать таблицу истинности логической функции !(a || b & c) || a", 50);
+            Console.WriteLine();
+            writetext("a b c F", 50);
+            Console.WriteLine();
+            for (int a = 0; a < 2; a++)
+                for (int b = 0; b < 2; b++)
+                    for (int c = 0; c < 2; c++)
+                    {
+                        int r = !(a == 1 || b == 1 & c == 1) || a == 1 ? 1 : 0;
+                        Console.WriteLine(a + " "+ b + " " + c + " " + r);
+                    }
+            next();        
+        }
+        private static void sovern()
+        {
+            writetext("По введенному натуральному числу N определить, является ли оно совершенным. Совершенное число равно сумме всех своих делителей, включая единицу и не включая себя.", 50);
+            Console.WriteLine();
+            writetext("Введите число N: ", 50);
+            int n = Convert.ToInt32(Console.ReadLine());
+            int sum = 0;
+            for (int i = 1; i < n; i++)
+                if (Math.IEEERemainder(n, i) == 0) sum = sum + i;
+            if (n == sum) writetext("Число совершенное", 50);
+            else writetext("Число не совершенное", 50);
+            next();
+        }
+        private static void dvuzif()
+        {
+            writetext("Распечатать все четырехзначные натуральные десятичные числа из диапазона [2000..3000], в записи которых нет двух одинаковых цифр. Подсчитать количество таких чисел.", 50);
+            Console.WriteLine();
+            int sum = 0;
+            for (int i = 2000; i <= 3000; i++)
+            {
+                string s = i.ToString();
+                if (s[0] != s[1] && s[0] != s[2] && s[0] != s[3] && s[1] != s[2] && s[1] != s[3] && s[2] != s[3])
+                {
+                    sum++;
+                    writetext(i+", ",5);
+                }
+            }
+            Console.WriteLine();
+            writetext("Количество таких чиел: "+sum,50);
+            next();
+        }
+        private static void sple()
+        {
+            writetext("Выяснить, какие цифры (по одной справа и слева) надо приписать к числу 1022, чтобы полученное число делилось на 7, 8, 9.", 50);
+            Console.WriteLine();
+            for (int p = 0; p < 10; p++)
+                for (int l = 0; l < 10; l++)
+                {
+                    string ps = p.ToString();
+                    string ls = l.ToString();
+                    int res = Convert.ToInt32(ls + "1022" + ps);
+                    if (Math.IEEERemainder(res, 7) == 0 && Math.IEEERemainder(res, 8) == 0 && Math.IEEERemainder(res, 9) == 0)
+                        writetext("Полученное число: "+res,50);
+                }
+            next();
+        }
+        private static void summnat()
+        {
+            writetext("Натуральное число m представить в виде суммы квадратов двух натуральных чисел. Выдать сообщение, если такое представление невозможно.", 50);
+            Console.WriteLine();
+            writetext("Введите число m: ", 50);
+            int m = Convert.ToInt32(Console.ReadLine());
+            int ogr;
+            if (m < 10) ogr = m;
+            else if (m < 100) ogr = (int)Math.Round((double)m / 2);
+            else if (m < 1000) ogr = (int)Math.Round((double)m / 9);
+            else if (m < 10000) ogr = (int)Math.Round((double)m / 90);
+            else ogr = 10000;
+            int res = 0;
+            for (int i = 1; i < ogr; i++)
+                for (int r = 1; r < ogr; r++)
+                {
+                    double s = Math.Pow(i, 2) + Math.Pow(r, 2);
+                    if (s == m)
+                    {
+                        Console.WriteLine(s+" = p("+i+","+r+")");
+                        res++;
+                    }
+                }
+            if(res == 0) writetext("Представление в виде ссумы квадратов двух натуральных чисел, для данного числа - не найденно",50);
+            next();
+        }
+        private static void nod()
+        {
+            writetext("Найти наибольший общий делитель (НОД) двух введенных натуральных чисел, используя алгоритм Евклида.", 50);
+            Console.WriteLine();
+            writetext("Введите первое число: ", 50);
+            int one = Convert.ToInt32(Console.ReadLine());
+            writetext("Введите второе число: ", 50);
+            int two = Convert.ToInt32(Console.ReadLine());
+         r: if (one != two)
+            {
+                if (one > two) one = one - two;
+                else two = two - one;
+                goto r;
+            }
+            else writetext("НОД: "+one, 50);
+            next();
+        }
+        private static void posled()
+        {
+            writetext("Даны вещественные числа А и В (A<B). Найти первый член последовательности, который не принадлежит [A,B].", 50);
+            Console.WriteLine();
+            writetext("Введите число A: ", 50);
+            int a = Convert.ToInt32(Console.ReadLine());
+            writetext("Введите число B: ", 50);
+            int b = Convert.ToInt32(Console.ReadLine());
+            if (b <= a) writetext("A должно быть меньше B", 50);
+            else
+                for (int n = 1; n < 1000; n++)
+                {
+                    double skob = 0;
+                    for(int i=1;i<=n;i++) skob = skob + 1/i;
+                    double res = Math.Pow(-1,n) * skob;
+                    if (!(res >= a && res <= b))
+                    {
+                        writetext("Член последовательности "+n+" - число: "+res, 50);
+                        n = 1000;
+                    }
+                }
+            next();
+        }
+        private static double schet(double p, double v, int z)
+        {
+            double r;
+            if (z == 0) r = p + v;
+            else if (z == 1) r = v - p;
+            else if (z == 2) r = p * v;
+            else r = v / p;
+            return r;
+        }
+        private static void podstav()
+        {
+            writetext("В выражении (((( 1 ? 2) ? 3) ? 4) ? 5) ? 6  вместо каждого знака ? поставить знак одной из операций +, -, *, / так, чтобы результат вычислений был равен 35.", 50);
+            Console.WriteLine();
+            string[] z = {"+", "-", "*", "/"};
+            for(int o=0;o<4;o++)
+                for(int t=0;t<4;t++)
+                    for(int h=0;h<4;h++)
+                        for(int f=0;f<4;f++)
+                            for (int i = 0; i < 4; i++)
+                            {
+                                double l = schet(6, schet(5, schet(4, schet(3, schet(2, 1, o), t), h), f), i);
+                                if (l == 35)
+                                    Console.WriteLine("((((1" + z[o] + "2)" + z[t] + "3)" + z[h] + "4)" + z[f] + "5)" + z[i] + "6 = "+l);
+                            }
+            next();
+        }
+        private static void siz(string type)
+        {
+            if (type == "up") fontsiz++;
+            else if (type == "down" && fontsiz != 0)fontsiz--;
+            else fontsiz = 6;
+            SetConsoleFont(GetStdHandle(-11), Convert.ToUInt32(fontsiz));
+            next();
+        }
+        private static void next()
+        {
+            Console.WriteLine("");
+            Console.Write("Tests> ");
+        }
+        private static void start()
+        {
+            Console.Title = "Тестовая программа (Александр Коровин)";
+            Console.SetCursorPosition(30, 0);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Тестовая программа");
+            Console.SetCursorPosition(28, 1);
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine("(с) Александр Коровин");
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.SetCursorPosition(18, 2);
+            Console.WriteLine("Чтобы получить список комманд введите help");
+            Console.ResetColor();
+            next();
+        }
+        static void Main(string[] args)
+        {
+            string command = string.Empty;
+            start();
+            while (true)
+            {
+                command = Console.ReadLine();
+                switch (command.ToLower())
+                {
+                    case "help": help(); break;
+                    case "info": info(); break;
+                    case "zadachi": zadachi(); break;
+                    case "summkub": summkub(); break;
+                    case "sinfunc": sinfunc(); break;
+                    case "nkuy": nkuy(); break;
+                    case "nkstar": nkstar(); break;
+                    case "fibbo": fibbo(); break;
+                    case "krat": krat(); break;
+                    case "nopow": nopow(); break;
+                    case "summm": summm(); break;
+                    case "naturn": naturn(); break;
+                    case "zfunc": zfunc(); break;
+                    case "logfunc": logfunc(); break;
+                    case "sovern": sovern(); break;
+                    case "dvuzif": dvuzif(); break;
+                    case "sple": sple(); break;
+                    case "summnat": summnat(); break;
+                    case "nod": nod(); break;
+                    case "posled": posled(); break;
+                    case "podstav": podstav(); break;
+                    case "exit": return; break;
+                    case "clear": Console.Clear(); start(); break;
+                    case "sizeup": siz("up"); break;
+                    case "sizedown": siz("down"); break;
+                    case "sizereset": siz("reset"); break;
+                    default:
+                        Console.WriteLine("Комманда не найдена. Список комманд - help");
+                        Console.Write("Tests> ");
+                        break;
+                }
+            }
+        }
+    }
+}
